@@ -22,16 +22,33 @@ class App extends Component {
     axios
       .get("https://practiceapi.devmountain.com/api/posts")
       .then(response => {
-        console.log(response.data);
         this.setState({ posts: response.data });
       });
   }
 
-  updatePost() {}
+  updatePost(id, text) {
+    axios
+      .put(`https://practiceapi.devmountain.com/api/posts?id=${id}`, { text })
+      .then(response => {
+        this.setState({ posts: response.data });
+      });
+  }
 
-  deletePost() {}
+  deletePost(id) {
+    axios
+      .delete(`https://practiceapi.devmountain.com/api/posts?id=${id}`)
+      .then(response => {
+        this.setState({ posts: response.data });
+      });
+  }
 
-  createPost() {}
+  createPost(text) {
+    axios
+      .post(`https://practiceapi.devmountain.com/api/posts`, { text })
+      .then(response => {
+        this.setState({ posts: response.data });
+      });
+  }
 
   render() {
     const { posts } = this.state;
@@ -41,11 +58,19 @@ class App extends Component {
         <Header />
 
         <section className="App__content">
-          <Compose />
+          <Compose createPostFn={this.createPost} />
 
           {posts.map(val => {
-            console.log(val);
-            return <Post key={val.id} text={val.text} date={val.date} />;
+            return (
+              <Post
+                key={val.id}
+                text={val.text}
+                date={val.date}
+                updatePostsFn={this.updatePost}
+                id={val.id}
+                deletePostFn={this.deletePost}
+              />
+            );
           })}
         </section>
       </div>
